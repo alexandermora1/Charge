@@ -1,18 +1,13 @@
-import { useState } from 'react'
 import './App.css'
-import { diceOverTargetValue, diceUnderOrEqualSum, rollD6, rollMoreDice } from "./engine/rng"
-import { useEffect } from "react"
+import { EMPIRE_ARMY, ORC_ARMY, printRegimentSummary } from "./engine/armyLists"
 
 
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    
-    
-  }, []);
-
+  
+  console.log(printRegimentSummary(EMPIRE_ARMY[0]));
+  console.log(printRegimentSummary(ORC_ARMY[0]));
+  
 
   return (
     <>
