@@ -4,7 +4,7 @@ import { createRegiment } from "./regiment";
 export const EMPIRE_ARMY = [
   createRegiment("EMPIRE_SWORDSMAN", {
     id: "swordsmen1",
-    models: 20,
+    models: 19,
     width: 5,
     position: { x: 10, y: 20 },
     facing: 0

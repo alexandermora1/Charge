@@ -46,7 +46,7 @@ export function resolveMelee(attackUnit, defendUnit, rng) {
     const saveRolls = rng.diceOverTargetValue(wounds.successes, toSaveTarget);
     saved = saveRolls.successes;
     trace.push(`Defenders armour save: ${toSaveTarget}+`);
-    trace.push(`Rolled armour saves: ${saveRolls.rolls} -> ${saved.successes} wounds saved.`);
+    trace.push(`Rolled armour saves: ${saveRolls.rolls} -> ${saveRolls.successes} wounds saved.`);
   }
 
   // Final result
@@ -54,4 +54,14 @@ export function resolveMelee(attackUnit, defendUnit, rng) {
   trace.push(`Models killed: ${modelsKilled}`);
   
   return {modelsKilled, trace}
+}
+
+
+export function getFrontRankWidth(attacker, defender) {
+  return Math.min(attacker.width, defender.width);
+}
+
+export function getFightingModels(attacker, defender) {
+  const frontRankWidth = getFrontRankWidth(attacker, defender);
+  return Math.min(frontRankWidth, attacker.models);
 }
