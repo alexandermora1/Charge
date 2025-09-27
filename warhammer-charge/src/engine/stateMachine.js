@@ -1,5 +1,6 @@
 import { resolveMelee } from "./combat"
 import { removeCasualties } from "./regiment"
+import { EMPTY_ROUND_DATA } from "./roundData"
 import { STATES } from "./states"
 
 // Phase handlers
@@ -8,6 +9,7 @@ export function createInitialState(attacker, defender) {
     current: "DECLARE_CHARGE",
     attacker,
     defender,
+    roundData: {...EMPTY_ROUND_DATA},
     combatResult: null,
     log: ["Declare chargers phase begins!"]
   }
@@ -67,10 +69,24 @@ export function attackerStrikesPhase(state, rng) {
 }
 
 export function defenderStrikesPhase(state, rng) {
+  const attacker = state.attacker;
+  const defender = state.defender;
+
+  const { modelsKilled, trace } = resolveMelee(defender, attacker, rng);
+  const attackerAfter = removeCasualties(attacker, modelsKilled);
+
   return {
     ...state,
-    current: STATES.DEFENDER_STRIKES,
-    log: [...state.log, "Defender strikes phase begins!"]
+    current: STATES.COMBAT_RESOLUTION,
+    attacker: attackerAfter,
+    roundData: {
+      ...state.roundData,
+      defenderWounds: modelsKilled,
+    },
+    log: [
+      ...state.log, "Defender strikes phase begins!",
+      ...trace, `Defender inflicted ${modelsKilled} casualties.`
+    ]
   }
 }
 
