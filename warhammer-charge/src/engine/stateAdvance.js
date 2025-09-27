@@ -20,9 +20,9 @@ export function advance(state, rng) {
     case STATES.MOVE_CHARGERS:
       return combatPhaseStart(state);
     case STATES.COMBAT_PHASE_START:
-      return attackerStrikesPhase(state);
+      return attackerStrikesPhase(state, rng);
     case STATES.ATTACKER_STRIKES:
-      return defenderStrikesPhase(state);
+      return defenderStrikesPhase(state, rng);
     case STATES.DEFENDER_STRIKES:
       return combatResolutionPhase(state);
     case STATES.COMBAT_RESOLUTION:
@@ -32,5 +32,5 @@ export function advance(state, rng) {
     case STATES.POST_COMBAT:
       return { ...state, log: [...state.log, "Turn complete."]}
     default:
-      throw new Error("Unknown state:", state.current);
+      throw new Error(`Unknown state: ${state.current}`);
 }}

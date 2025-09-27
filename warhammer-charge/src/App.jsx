@@ -35,23 +35,12 @@ function App() {
   let state = createInitialState(EMPIRE_ARMY[0], ORC_ARMY[0]);
   console.log(state.current);
   
-  state = advance(state);
-  console.log(state.current);
-  state = advance(state);
-  console.log(state.current);
-  state = advance(state);
-  console.log(state.current);
-  state = advance(state);
-  console.log(state.current);
-  state = advance(state);
-  console.log(state.current);
-  state = advance(state);
-  console.log(state.current);
-  state = advance(state);
-  console.log(state.current);
-  state = advance(state);
-  console.log(state.current);
+  while (state.current !== "POST_COMBAT") {
+    state = advance(state, rng);
+    console.log("→", state.current, "| Log:", state.log.at(-1));
+  }
  
+  
   
   
   
