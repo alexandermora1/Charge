@@ -53,7 +53,7 @@ export function resolveMelee(attackUnit, defendUnit, rng) {
   const modelsKilled = Math.max(0, wounds.successes - saved);
   trace.push(`Models killed: ${modelsKilled}`);
   
-  return {modelsKilled, trace}
+  return { modelsKilled, trace };
 }
 
 

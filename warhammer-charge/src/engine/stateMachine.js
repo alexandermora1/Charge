@@ -114,6 +114,10 @@ export function combatResolutionPhase(state) {
   const winningMargin = attackerTotal - defenderTotal;
   const winner = winningMargin > 0 ? "attacker" : winningMargin < 0 ? "defender" : "draw";
 
+  console.log(`Attacker CR = Wounds: ${woundsA}, Ranks: ${ranksA}, Standard: ${standardA}, Outnumbering: ${outnumberingA}. Total: ${attackerTotal} points.`);
+  console.log(`Defender CR = Wounds: ${woundsD}, Ranks: ${ranksD}, Standard: ${standardD}, Outnumbering: ${outnumberingD}. Total: ${defenderTotal} points.`);   
+  console.log(`${winner === "draw" ? "Combat is a draw." : `${winner} wins by ${Math.abs(winningMargin)}.`}`);
+  
   return {
     ...state,
     current: STATES.BREAK_TEST,
@@ -125,9 +129,6 @@ export function combatResolutionPhase(state) {
     },
     log: [
       ...state.log, "Combat resolution phase begins!",
-      `Attacker CR = Wounds: ${woundsA}, Ranks: ${ranksA}, Standard: ${standardA}, Outnumbering: ${outnumberingA}. Total: ${attackerTotal} points.`,
-      `Defender CR = Wounds: ${woundsD}, Ranks: ${ranksD}, Standard: ${standardD}, Outnumbering: ${outnumberingD}. Total: ${defenderTotal} points.`,   
-      `${winner} wins by ${winningMargin}.`,   
     ]
   }
 }
@@ -156,7 +157,7 @@ export function breakTestPhase(state, rng) {
   
   // Find loser key to access regiment
   const loserKey = winner === "attacker" ? "defender" : "attacker";
-  const losingUnit = state[loser];
+  const losingUnit = state[loserKey];
 
   // Leadership modifier = LD - winningMargin (never lower than 2)
   const ld = losingUnit.profile.ld;
@@ -182,7 +183,7 @@ export function breakTestPhase(state, rng) {
       }
     },
     log: [...state.log, "Break test phase begins!",
-      `Break test for ${losingUnit} (Ld${losingUnit.profile.ld} - ${winningMargin} = ${ldModified}).`,
+      `Break test for ${losingUnit} (Ld${losingUnit.profile.ld} - ${winningMargin} = ${target}).`,
       `Rolled ${ldTest.total} on 2D6 -> ${passed ? "Passed" : "Failed"}.`
     ]
   }

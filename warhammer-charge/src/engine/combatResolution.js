@@ -13,5 +13,5 @@ export function standardScore(regiment) {
 
 // The side that outnumbers the other gets +1 point. No points if equal.
 export function outnumberScore(regiment, opponent) {
-  return regiment.models > opponent ? 1 : 0;
+  return regiment.models > opponent.models ? 1 : 0;
 }

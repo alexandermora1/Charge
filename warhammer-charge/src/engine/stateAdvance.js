@@ -22,15 +22,16 @@ export function advance(state, rng) {
       case STATES.COMBAT_PHASE_START:
         return attackerStrikesPhase(state, rng);
       case STATES.ATTACKER_STRIKES:
+        return attackerStrikesPhase(state, rng);
+        case STATES.DEFENDER_STRIKES:
         return defenderStrikesPhase(state, rng);
-      case STATES.DEFENDER_STRIKES:
+        case STATES.COMBAT_RESOLUTION:
         return combatResolutionPhase(state);
-      case STATES.COMBAT_RESOLUTION:
+        case STATES.BREAK_TEST:
         return breakTestPhase(state, rng);
-      case STATES.BREAK_TEST:
+        case STATES.POST_COMBAT:
         return postCombatPhase(state);
-      case STATES.POST_COMBAT:
-      return { ...state, log: [...state.log, "Turn complete."]}
+      // return { ...state, log: [...state.log, "Turn complete."]}
     default:
       throw new Error(`Unknown state: ${state.current}`);
 }}
