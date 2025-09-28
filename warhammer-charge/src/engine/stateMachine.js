@@ -1,6 +1,7 @@
 import { resolveMelee } from "./combat"
 import { outnumberScore, ranksScore, standardScore } from "./combatResolution"
 import { removeCasualties } from "./regiment"
+import { diceUnderOrEqualSum } from "./rng"
 import { EMPTY_ROUND_DATA } from "./roundData"
 import { STATES } from "./states"
 
@@ -11,7 +12,6 @@ export function createInitialState(attacker, defender) {
     attacker,
     defender,
     roundData: {...EMPTY_ROUND_DATA},
-    combatResult: null,
     log: ["Declare chargers phase begins!"]
   }
 }
@@ -21,7 +21,7 @@ export function checkRangePhase(state) {
 
   return {
     ...state,
-    current: STATES.CHECK_RANGE,
+    current: STATES.MOVE_CHARGERS,
     log: [...state.log, "Check range phase begins!"]
   }
 }
@@ -31,7 +31,7 @@ export function moveChargersPhase(state) {
   
   return {
     ...state,
-    current: STATES.MOVE_CHARGERS,
+    current: STATES.COMBAT_PHASE_START,
     log: [...state.log, "Move chargers phase begins!"]
   }
 }
@@ -39,7 +39,7 @@ export function moveChargersPhase(state) {
 export function combatPhaseStart(state) {
   return {
     ...state,
-    current: STATES.COMBAT_PHASE_START,
+    current: STATES.ATTACKER_STRIKES,
     log: [...state.log, "Combat phase begins!"]
   }
 }
@@ -132,13 +132,59 @@ export function combatResolutionPhase(state) {
   }
 }
 
-// TODO: if unit fails break test, mark unit as fleeing
-export function breakTestPhase(state) {
+export function breakTestPhase(state, rng) {
+  const cr = state.roundData?.combatResult;
+  
+  // In case combat resolution didn’t run; end the round
+  if (!cr) {
+    return {
+      ...state,
+      current: STATES.POST_COMBAT,
+      log: [...state.log, "Break test skipped (no combat result)."],
+    };
+  }
+  
+  const { winner, winningMargin } = cr;
+
+  if (winner === "draw") {
+    return {
+      ...state,
+      current: STATES.POST_COMBAT,
+      log: [...state.log, "Break test skipped (combat is a draw)."]
+    };
+  }
+  
+  // Find loser key to access regiment
+  const loserKey = winner === "attacker" ? "defender" : "attacker";
+  const losingUnit = state[loser];
+
+  // Leadership modifier = LD - winningMargin (never lower than 2)
+  const ld = losingUnit.profile.ld;
+  const penalty = Math.abs(winningMargin);
+  const target = Math.max(2, ld - penalty);
+  const ldTest = rng.diceUnderOrEqualSum(2, target);
+
+  // If test is passed, move on to next turn. If failed, mark the loser as fleeing
+  const passed = ldTest.passed;
+  const updatedLoser = passed ? losingUnit : { ...losingUnit, isFleeing: true };
 
   return {
     ...state,
-    current: STATES.BREAK_TEST,
-    log: [...state.log, "Break test phase begins!"]
+    current: STATES.POST_COMBAT,
+    [loserKey]: updatedLoser,
+    roundData: {
+      ...state.roundData,
+      breakTest: {
+        loser: losingUnit,
+        target,
+        roll: ldTest.total,
+        passed
+      }
+    },
+    log: [...state.log, "Break test phase begins!",
+      `Break test for ${losingUnit} (Ld${losingUnit.profile.ld} - ${winningMargin} = ${ldModified}).`,
+      `Rolled ${ldTest.total} on 2D6 -> ${passed ? "Passed" : "Failed"}.`
+    ]
   }
 }
 
