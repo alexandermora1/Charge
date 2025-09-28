@@ -1,4 +1,5 @@
 import { resolveMelee } from "./combat"
+import { outnumberScore, ranksScore, standardScore } from "./combatResolution"
 import { removeCasualties } from "./regiment"
 import { EMPTY_ROUND_DATA } from "./roundData"
 import { STATES } from "./states"
@@ -59,7 +60,7 @@ export function attackerStrikesPhase(state, rng) {
     defender: defenderAfter,
     roundData: {
       ...state.roundData,
-      attackerWounds: modelsKilled,
+      woundsByAttacker: modelsKilled,
     },
     log: [
       ...state.log, "Attacker strikes phase begins!",
@@ -68,6 +69,7 @@ export function attackerStrikesPhase(state, rng) {
   }
 }
 
+// Same as attack, but defenders strike back.
 export function defenderStrikesPhase(state, rng) {
   const attacker = state.attacker;
   const defender = state.defender;
@@ -81,7 +83,7 @@ export function defenderStrikesPhase(state, rng) {
     attacker: attackerAfter,
     roundData: {
       ...state.roundData,
-      defenderWounds: modelsKilled,
+      woundsByDefender: modelsKilled,
     },
     log: [
       ...state.log, "Defender strikes phase begins!",
@@ -90,11 +92,43 @@ export function defenderStrikesPhase(state, rng) {
   }
 }
 
+// Calculate combat resolution to see which side needs to take a break test.
+// Points are awarded from unsaved wounds, standard bearer, outnumbering, ranks.
+// TODO: Musician is the tiebreaker. If both or no musician, just a tie - skip break test.
 export function combatResolutionPhase(state) {
+  const attacker = state.attacker;
+  const defender = state.defender;
+
+  const woundsA = state.roundData.woundsByAttacker;
+  const standardA = standardScore(attacker);
+  const outnumberingA = outnumberScore(attacker, defender)
+  const ranksA = ranksScore(attacker);
+  const attackerTotal = woundsA + standardA + outnumberingA + ranksA;
+
+  const woundsD = state.roundData.woundsByDefender;
+  const standardD = standardScore(defender);
+  const outnumberingD = outnumberScore(defender, attacker)
+  const ranksD = ranksScore(defender);
+  const defenderTotal = woundsD + standardD + outnumberingD + ranksD;
+
+  const winningMargin = attackerTotal - defenderTotal;
+  const winner = winningMargin > 0 ? "attacker" : winningMargin < 0 ? "defender" : "draw";
+
   return {
     ...state,
-    current: STATES.COMBAT_RESOLUTION,
-    log: [...state.log, "Combat resolution phase begins!"]
+    current: STATES.BREAK_TEST,
+    roundData: {
+      ...state.roundData,
+      combatResult: {
+        attackerTotal, defenderTotal, winningMargin, winner
+      },
+    },
+    log: [
+      ...state.log, "Combat resolution phase begins!",
+      `Attacker CR = Wounds: ${woundsA}, Ranks: ${ranksA}, Standard: ${standardA}, Outnumbering: ${outnumberingA}. Total: ${attackerTotal} points.`,
+      `Defender CR = Wounds: ${woundsD}, Ranks: ${ranksD}, Standard: ${standardD}, Outnumbering: ${outnumberingD}. Total: ${defenderTotal} points.`,   
+      `${winner} wins by ${winningMargin}.`,   
+    ]
   }
 }
 

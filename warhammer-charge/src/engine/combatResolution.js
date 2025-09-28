@@ -1,12 +1,5 @@
 import { getFullRanks } from "./regiment";
 
-// Unsaved wounds. 1 point each. No limit.
-export function woundsScore(state, side) {
-  const attacking = side.unsavedWounds;
-  const defending = state.unsavedWounds;
-  const wounds = attacking - defending;
-  return wounds;
-}
 
 // Rank bonus = full ranks to a max of 3
 export function ranksScore(regiment) {
