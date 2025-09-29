@@ -18,7 +18,7 @@ Two regiments of warriors face each other. One side declares a charge, and the s
 
 1. Post-combat cleanup
 
-The project is a prototype and learning exercise, not an official Warhammer product (don't sue me, Games Workshop!).
+The project is a prototype and learning exercise, not an official Warhammer product (don't sue me, Games Workshop!). The project has just started, so some functionality may be missing, which will be imlemented later.
 
 ## Features
 
