@@ -1,8 +1,8 @@
-## ⚔️ Charge! — Warhammer Battle Simulator ⚔️
+# ⚔️ Charge! — Warhammer Battle Simulator ⚔️
 
 This is a small experimental battle engine written in React + JavaScript that simulates a Warhammer Fantasy charge and combat round.
 
-Two regiments of warriors face each other. One side declares a charge, and the system handles the following steps:
+Two regiments of warriors face each other. One side declares a charge, and the system will handle the following steps:
 
 1. Charge declaration & range check
 
@@ -20,19 +20,35 @@ Two regiments of warriors face each other. One side declares a charge, and the s
 
 The project is a prototype and learning exercise, not an official Warhammer product (don't sue me, Games Workshop!). The project has just started, so some functionality may be missing, which will be imlemented later.
 
-## Features
+## Progress so far
 
-- Regiment creation with profiles (Empire Swordsmen, Orc Boys, etc.)
+### Implemented:
 
-- Dice rolling system (rollD6, multiple dice, leadership tests)
+- Dice rolling system (D6, multiple dice, leadership tests)
 
-- Combat resolution logic (ranks, banners, outnumbering)
+- Core unit profiles (Empire Swordsman, Orc Boy)
 
-- State machine handling game phases
+- Regiment creation and casualty removal
 
-- Simple battlefield UI with unit boxes rendered on screen
+- Melee combat resolution (to hit, to wound, armour saves)
 
-- Logging of combat events to track each step
+- Combat resolution scoring (ranks, standards, outnumbering, unsaved wounds)
+
+- Turn sequence with state machine handling phases
+
+- Basic UI: battlefield with unit boxes, log panel, and controls
+
+### Planned / Work in progress:
+
+- More unit types (spearmen, cavalry, monsters, ranged units)
+
+- Special rules (spears fighting in extra ranks, musicians for tie-breaks, champions)
+
+- Proper charge range & failed charge rules
+
+- Animations and better battlefield UI (instead of colored boxes)
+
+- Support for multiple regiments per side
 
 ## Getting started
 
@@ -41,3 +57,6 @@ The project is a prototype and learning exercise, not an official Warhammer prod
 1. Install dependencies: <br/>npm install
   
 1. Run locally: <br/> npm run dev
+
+
+
