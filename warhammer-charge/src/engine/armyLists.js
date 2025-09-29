@@ -6,8 +6,9 @@ export const EMPIRE_ARMY = [
     id: "swordsmen1",
     models: 20,
     width: 5,
-    position: { x: 10, y: 20 },
-    facing: 0
+    position: { x: 350, y: 200 },
+    facing: 0,
+    baseSize: 20,
   }),
 ];
 
@@ -16,8 +17,9 @@ export const ORC_ARMY = [
     id: "orcs1",
     models: 15,
     width: 5,
-    position: { x: 40, y: 20 },
-    facing: 180
+    position: { x: 335, y: 25 },
+    facing: 180,
+    baseSize: 25,
   }),
 ];
 
