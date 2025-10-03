@@ -3,7 +3,7 @@ import { createRegiment } from "./regiment";
 
 export const EMPIRE_ARMY = [
   createRegiment("EMPIRE_SWORDSMAN", {
-    id: "swordsmen1",
+    id: "Empire Swordsmen",
     models: 20,
     width: 5,
     position: { x: 350, y: 200 },
@@ -14,7 +14,7 @@ export const EMPIRE_ARMY = [
 
 export const ORC_ARMY = [
   createRegiment("ORC_BOY", {
-    id: "orcs1",
+    id: "Orc Boyz",
     models: 15,
     width: 5,
     position: { x: 335, y: 25 },
